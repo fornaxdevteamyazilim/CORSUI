@@ -92,10 +92,10 @@ app.run(['$rootScope', '$state', '$browser', '$stateParams', '$location', 'authS
         // GLOBAL APP SCOPE
         // set below basic information
         $rootScope.app = {
-            name: 'ROP NG',
+            name: 'CORS',
             author: 'Fornax A.Ş.',
             description: 'Retail Operation Platform NG',
-            version: '1.0.739',
+            version: '1.0.745',
             year: ((new Date()).getFullYear()),
             isMobile: (function () {// true if the browser is a mobile device
                 var check = false;
@@ -132,7 +132,7 @@ app.config(function ($httpProvider) {
                 if (request.url.endsWith(".html") && !request.url.includes("tabset.html")) {
                     if ($templateCache.get(request.url) === undefined) { // cache miss
                         // Item is not in $templateCache so add our query string
-                        request.url = request.url + '?v=0739';
+                        request.url = request.url + '?v=0745';
                     }
                 }
                 return request;

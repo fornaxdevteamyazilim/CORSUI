@@ -653,15 +653,12 @@ function optionitemRadio($compile) {
             "<h4  class='hideContentHeader col-xs-12 col-lg-12 col-md-12 col-sm-12 text-capitalize' content-click>" +
             "{{:: option.name}}" +
             "</h4>" +
-            "<div class='col-lg-12 col-md-12 col-sm-12 col-xs-12 visibleContent text-large'>" +
-            "<div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'>" +
-            "<label class='col-lg-3 col-md-3 col-sm-6 col-xs-6 text-bold text-dark' style='color:black;' ng-repeat='item in option.Items'>" +
-            "<input type='radio' id='orderselect' for='orderselect' name='' ng-value='item.id' ng-model='option.SelectedItems.id' ng-click='UpdateDetails($event,option)' ng-init='UpdateDetails($event,option)'>" +
+            "<div class='btn-group col-lg-12' data-toggle='buttons'>" +
+            "<label class='btn btn-red col-lg-3' ng-repeat='item in option.Items' ng-class=\"{'btn-o':item.id!=option.SelectedItems.id}\">" +
+            "<input type='radio' name='' ng-value='item.id' ng-model='option.SelectedItems.id' ng-click='UpdateDetails($event,option)' ng-init='UpdateDetails($event,option)'   >" +
             "{{:: item.name}}</label>" +
             "</div>" +
-            "</div>" +
-            "</div>" +
-
+            
             "<div class='hideContent col-lg-12' id='contentdetail'>" +
             "<div id='optdetail'></div>" +
             "</div>",

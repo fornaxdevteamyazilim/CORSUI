@@ -240,7 +240,7 @@ function mainscreenCtrl($scope, $modal, $timeout, $filter, SweetAlert, $interval
     };
     $scope.selectRootOrderPage = function (orderType) {
         $rootScope.OrderType = orderType;
-        if (orderType == 0)
+        if (orderType == 0 )
             $scope.login('#/app/orders/tablePlan');
         //if (orderType == 0 && $rootScope.user.UserRole.MemberID == 106851154380)
         //    $scope.login('#/app/orders/tablePlantwo');
@@ -272,7 +272,7 @@ function mainscreenCtrl($scope, $modal, $timeout, $filter, SweetAlert, $interval
         }
         if (orderType == 4)
             $scope.login('#/app/orders/stafforder');
-        if (orderType == 5)
+        if (orderType == 5 && $rootScope.user.restrictions.testtt == 'Enable')
             $scope.login('#/app/orders/pickup');
         if (orderType == 6)
             $scope.login('#/app/orders/mall');

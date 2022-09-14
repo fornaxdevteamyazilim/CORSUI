@@ -12,8 +12,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ROPNGUI</RootNamespace>
-    <AssemblyName>ROPNGUI</AssemblyName>
+    <RootNamespace>CORSUI</RootNamespace>
+    <AssemblyName>CORSUI</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -344,7 +344,6 @@
     <Content Include="assets\js\controllers\hnr\hnrproductCtrl.js" />
     <Content Include="assets\js\controllers\hnr\hotandreadyCtrl.js" />
     <Content Include="assets\js\controllers\kitchenDisplay\kds2Ctrl.js" />
-    <Content Include="assets\js\controllers\kitchenDisplay\kdskfc2Ctrl.js" />
     <Content Include="assets\js\controllers\login_lockCtrl.js" />
     <Content Include="assets\js\controllers\matching\inventoryunitmatchingCtrl.js" />
     <Content Include="assets\js\controllers\definitions\gridCtrl.js" />
