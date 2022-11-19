@@ -5693,6 +5693,20 @@ app.config(['$stateProvider', '$urlRouterProvider', '$controllerProvider', '$com
                 url: '/clockinout',
                 templateUrl: "assets/views/clockinout/clockinout.html",
                 resolve: loadSequence('underscore', 'clockinoutCtrl', 'toaster', 'sweet-alert')
+            })
+            .state('kds', {
+                url: '/kds',
+                template: '<div ui-view ng-init="app.layout.isNavbarFixed=false" style="background-color:rgb(0, 0, 0);"></div>',
+                abstract: true})
+            .state('kds.kitchendisplay2', {
+                url: '/kitchendisplay2',
+                templateUrl: "assets/views/kitchenDisplay/kitchenDisplay2.html",
+                resolve: loadSequence('underscore', 'xeditable', 'config-xeditable', 'sweet-alert','oitozero.ngSweetAlert','ngTable', 'kds2Ctrl', 'kdslastordersCtrl', 'dashboardCtrl'),
+                title: 'Kitchen Display',
+                authenticate: true,
+                ncyBreadcrumb: {
+                    label: 'Kitchen Display'
+                }
             });
         // Generates a resolve object previously configured in constant.JS_REQUIRES (config.constant.js)
         function loadSequence() {

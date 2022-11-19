@@ -1,13 +1,13 @@
 ﻿
 app.factory('PaymentRestangular', function(Restangular) {
     return Restangular.withConfig(function(RestangularConfigurer) {
-      RestangularConfigurer.setBaseUrl('http://192.168.104.153:9065/api/');
+      RestangularConfigurer.setBaseUrl('http://195.155.128.66:9065/api/');
     });
   });
 
 
 app.controller('orderpaymentCtrl', orderpaymentCtrl);
-function orderpaymentCtrl($scope, $log, $modal, $filter, $modalInstance, Order, Restangular,PaymentRestangular, ngTableParams, SweetAlert, toaster, $window, $rootScope, $location, $translate, userService, ngnotifyService) {
+function orderpaymentCtrl($scope, $log, $modal, $filter, $modalInstance, Order, Restangular,localStorageService,PaymentRestangular, ngTableParams, SweetAlert, toaster, $window, $rootScope, $location, $translate, userService, ngnotifyService) {
     $rootScope.uService.EnterController("orderpaymentCtrl");
     $scope.order = Order;
     $scope.order.Amount = parseFloat(Math.round($scope.order.Amount * 100) / 100).toFixed(2);
@@ -162,6 +162,7 @@ function orderpaymentCtrl($scope, $log, $modal, $filter, $modalInstance, Order, 
             $scope.ShowButton = true;
             $scope.currentPayment.PaymentTypeID = type.id;
             $scope.currentPayment.PaymentDate = $filter('date')(ngnotifyService.ServerTime(), 'yyyy-MM-dd HH:mm:ss');
+            $scope.currentPayment.PosName=localStorageService.get('ClientName');
             Restangular.restangularizeElement('', $scope.currentPayment, 'orderpayment');
             if ($scope.isNewPayment) {
                 $scope.currentPayment.post().then(function (resp) {

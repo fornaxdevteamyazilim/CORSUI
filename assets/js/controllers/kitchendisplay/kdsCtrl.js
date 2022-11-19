@@ -1,21 +1,10 @@
-﻿app.controller('kds2Ctrl', kds2Ctrl);
-function kds2Ctrl($rootScope, $scope, $log, $modal, $translate, $interval, $timeout, Restangular, ngTableParams, SweetAlert, toaster, $window, $rootScope, $location, $filter, localStorageService, $translate, ngnotifyService, userService, ngAudio, $element, $localStorage) {
-    $rootScope.uService.EnterController("kds2Ctrl");
+﻿app.controller('kdsCtrl', kdsCtrl);
+function kdsCtrl($scope, $log, $modal, $interval, $timeout, Restangular, ngTableParams, SweetAlert, toaster, $window, $rootScope, $location, $filter, $translate, ngnotifyService, $element) {
+    $rootScope.uService.EnterController("kdsCtrl");
     $scope.item = {};
-    $scope.audio = ngAudio.load('assets/sound/ringin.mp3');
-    $scope.audio.volume = 0.8;
-    $scope.audio.pause();
     userService.userAuthorizated();
     $scope.inProgress = false;
-    $scope.KDIndex = 0;
-    $scope.$storage = $localStorage.$default({
-        KDisplayIndex: 0,
-        StoreProductionID:null
-    });
-    $scope.StoreProductions=[];
-    var stopTime;
-    var kd = this;
-    $scope.BottonDblcilik = function () { };
+    var stopTime;   
     $scope.translate = function () {
         $scope.trQuantity = $translate.instant('main.QUANTITY');
         $scope.trProductName = $translate.instant('main.PRODUCTNAME');
@@ -33,226 +22,112 @@ function kds2Ctrl($rootScope, $scope, $log, $modal, $translate, $interval, $time
         $scope.duration = $translate.instant('main.DURATION');
         $scope.timer = $translate.instant('main.TIMER');
         $scope.timerstr = $translate.instant('main.TIMERSTR');
-        $scope.fontselection = $translate.instant('main.FONTSELECTION');
-        $scope.notes = $translate.instant('main.NOTES');
-        $scope.ordernote = $translate.instant('main.ORDERSNOTE');
-        $scope.kitchendisplayselection = $translate.instant('main.KITCHENDISPLAYSELECTION');
-
     };
     $scope.translate();
     var deregistration = $scope.$on('$translateChangeSuccess', function (event, data) {// ON LANGUAGE CHANGED
         $scope.translate();
     });
-    //$rootScope.disableSessionTimeOut();
-    var OrderRefresh = $scope.$on('OrderChange', function (event, data) {
-        $scope.LoadOrderItemStates();
-    });
-    var KDSNotify = $scope.$on('KDSUpdate', function (event, data) {
-        if (data.Beep)
-        $scope.audio.play();
-        $scope.LoadOrderItemStates();
-    });
-    var BumpBarData = $scope.$on('BumpBarData', function (event, data) {
-        var sID = $scope.$storage.KDisplayIndex ? $scope.$storage.KDisplayIndex : 0;
-        if (data.StationID == sID)
-            $scope.ApplyBumpBarData(data);
-    });
-    Restangular.all('cache/StoreProductions').getList({ 
-        StoreID:localStorageService.get('StoreID')
-    }).then(function (result) {
-        $scope.StoreProductions = result;
-    }, function (response) {
-        toaster.pop('warning', $translate.instant('Server.ServerError'), response.data.ExceptionMessage);
-    });
-    $scope.ApplyBumpBarData = function (data) {
-        var key = -1;
-        switch (data.Data) {
-            case "a": key = 0; break;
-            case "b": key = 4; break;
-            case "c": key = 1; break;
-            case "d": key = 5; break;
-            case "e": key = 2; break;
-            case "f": key = 6; break;
-            case "g": key = 3; break;
-            case "h": key = 7; break;
-            case "1": key = 0; break;
-            case "2": key = 1; break;
-            case "3": key = 2; break;
-            case "4": key = 3; break;
-            case "5": key = 4; break;
-            case "6": key = 5; break;
-            case "7": key = 6; break;
-            case "8": key = 7; break;
-            case "9": key = 8; break;
-            case "0": key = 9; break;
-            default: key = -1;
-        }
-        if (key => 0)
-            $scope.RemoveItem($scope.orderitemstates[key].OrderID, key);
-    };
-    var interval = $interval(function () {
-        $scope.UpdateOrderItemStatesTimers($scope.orderitemstates);
-    }, 1000);
     $scope.orderitemstates = [];
+    $scope.BuildSearchString = function (src) {
+        var result = [];
+        $scope.stop();
+        if ($rootScope.user && $rootScope.user.UserRole) {
+            result.push("Completed=0");
+            result.push("Orders.StoreID='" + $rootScope.user.StoreID + "'");
+            result.push("OrderStateID=4");
+            var date = $filter('date')(ngnotifyService.ServerTime(), 'HH');
+            if (date > 9) {
+                $scope.OrderDate = $filter('date')(ngnotifyService.ServerTime(), 'yyyy-MM-dd');
+                result.push("OrderDate >'" + $scope.OrderDate + "'");
+            } else {
+                var now = moment().subtract(1, 'days');
+                var filterdate = moment(now).format('YYYY-MM-DD');
+                result.push("OrderDate >'" + filterdate + "'");
+            }
+        }
+        return result;
+    };
     $scope.LoadOrderItemStates = function () {
         if ($scope.inProgress) return;
+        $scope.stop();
         $scope.inProgress = true;
-        Restangular.all('kds/getitems').getList({
-            StoreID: $rootScope.user.StoreID,
-            OrderStateID: 4,
-            //KDisplayIndex: $scope.$storage.KDisplayIndex ? $scope.$storage.KDisplayIndex : 0,
-            StoreProductionID:$scope.$storage.StoreProductionID
+        Restangular.all('orderitemstate').getList({
+            pageNo: 1,
+            pageSize: 100,
+            search: $scope.BuildSearchString(),
+            sort: '+Orders.OrderNumber',
         }).then(function (result) {
-            // if (result.length > 0)
-            //     $scope.audio.play();
-            // else
-            //     $scope.audio.pause();
-             $scope.inProgress = false;
-            $scope.orderitemstates = $scope.UpdateOrderItemStatesTimers(result.plain());
-            $scope.$broadcast('$$rebind::refresh');
+            $scope.inProgress = false;
+            angular.copy($scope.UpdateOrderItemStatesTimers(result.plain()), $scope.orderitemstates);
+            $scope.start();
         }, function (response) {
             $scope.inProgress = false;
-            toaster.pop('error', $translate.instant('Server.ServerError'), response.data.ExceptionMessage);
+            toaster.pop('error',$translate.instant('Server.ServerError'), response.data.ExceptionMessage);
+            $scope.start();
         });
     };
-    $scope.LoadOrderItemStates();
     $scope.UpdateOrderItemStatesTimers = function (items) {
         if (items && items.length) {
+            var TimersTotal = 0;
             for (var i = 0; i < items.length; i++) {
-                if (!items[i].data) {
-                    items[i].Timer = Math.round(moment.duration((moment(ngnotifyService.ServerTime())).diff(moment(items[i].FirstOrderItemStateDate))).asSeconds() - items[i].TotalDuration);
-                    items[i].data = items[i].Timer;
+                var d1 = moment(items[i].OrderItemStateDate);
+                var d2 = moment();
+                var data = moment.duration(d2.diff(d1)).asSeconds();
+                if (moment.duration(d2.diff(d1)).asSeconds() < items[i].Duration) {
+                    items[i].Timer = parseInt(items[i].Duration) - parseInt((moment.duration(d2.diff(d1)).asSeconds()));
+                    items[i].isTimedOut = false;
                 }
-                items[i].Timer++;
-                items[i].isTimedOut = items[i].Timer < 0;
-                items[i].TimerStr = items[i].Timer;
+                else {
+                    items[i].Timer = parseInt((moment.duration(d2.diff(d1)).asSeconds())) - parseInt(items[i].Duration);
+                    items[i].isTimedOut = true;
+                }
+                items[i].TimerStr = d1.add(items[i].Duration, 'seconds').fromNow();
             }
             return items;
         }
+        $scope.start();
     };
-    //$scope.RemoveItem = function (OrderID, index, AutoPrint) {
-    //    $scope.orderitemstates.splice(index, 1);
-    //    $scope.$broadcast('$$rebind::refresh');
-    //    if ($scope.WaitForResult == true) {
-    //        toaster.pop("warning", "Lütfen Bekleyin !", "Please Click Again!");
-    //    }
-    //    else {
-    //        if (!AutoPrint) {  //if (!AutoPrint) olmalı
-    //            SweetAlert.swal({
-    //                title: "TOPLU ETİKET YAZDIRMA",
-    //                text: "Etiketi Yazdırmak İstiyor musunuz ?",
-    //                type: "warning",
-    //                showCancelButton: true,
-    //                confirmButtonColor: "#DD6B55",
-    //                confirmButtonText: "Evet, Yazdır !",
-    //                cancelButtonText: "Hayır, Yazdırma !",
-    //                closeOnConfirm: true,
-    //                closeOnCancel: true
-    //            }, function (isConfirm) {
-    //                $scope.updateOrder(OrderID, isConfirm);
-    //            });
-    //        }
-    //        else {
-    //            $scope.updateOrder(OrderID, true);
-    //        }
-    //    }
-    //};
-    //$scope.updateOrder = function (OrderID,autoPrint) {
-    //    Restangular.one('kds/updateorder').get({
-    //        OrderID: OrderID,
-    //        AutoPrint: autoPrint
-    //    }).then(function (restresult) {
-    //        toaster.pop("success", "Hazır.", "Item prepared!");
-    //    }, function (restresult) {
-    //        $scope.WaitForResult = false;
-    //        toaster.pop('error', "Güncelleme başarısız !", restresult.data.ExceptionMessage);
-    //    })
-    //};
-
-    $scope.RemoveItem = function (OrderID, index) {
-        $scope.orderitemstates.splice(index, 1);
-        $scope.$broadcast('$$rebind::refresh');
-        if ($scope.WaitForResult == true) {
-            toaster.pop("warning", $translate.instant('kitchendisplayf.PleaseWait'), $translate.instant('kitchendisplayf.PleaseClickAgain'));
-        }
-        else {
-            var data = $scope.updateOrder(OrderID);
-        }
+    $scope.stop = function () {
+        $timeout.cancel(stopTime);
     };
-    $scope.updateOrder = function (OrderID) {
-        Restangular.one('kds/updateorder').get({
-            OrderID: OrderID,
-            AutoPrint: false,
-            KDisplayIndex: $scope.$storage.KDisplayIndex ? $scope.$storage.KDisplayIndex : 0,
-            StoreProductionID: $scope.$storage.StoreProductionID ? $scope.$storage.StoreProductionID : null, //bu eklenecek UI a 
-        }).then(function (restresult) {
-            toaster.pop("success", $translate.instant('kitchendisplayf.Prepared'), $translate.instant('kitchendisplayf.Itemprepared'));
-            $scope.LoadOrderItemStates();
-        }, function (restresult) {
-            $scope.WaitForResult = false;
-            toaster.pop('error', $translate.instant('kitchendisplayf.Updatefailed'), restresult.data.ExceptionMessage);
-            $scope.LoadOrderItemStates();
-        })
+    $scope.start = function () {
+        $scope.stop();
+        stopTime = $timeout(function () { $scope.LoadOrderItemStates(); }, 1000);
     };
-    $scope.setLocalStoregFont = function (data) {
-        localStorageService.set('FontSize', data)
-    };
-    $scope.gettLocalStoregFont = function () {
-        var data = localStorageService.get('FontSize');
-        $scope.ngstyle = (data) ? data : '';
-    };
-    $scope.gettLocalStoregFont();
-    $scope.Change = function (data) {
-        $scope.ngstyle = data;
-        $scope.setLocalStoregFont(data)
-    };
-    $scope.getLastOrders = function (addressID) {
-        var modalInstance = $modal.open({
-            templateUrl: 'assets/views/kitchenDisplay/kdslastorders.html',
-            controller: 'kdslastordersCtrl',
-            size: 'lg',
-            backdrop: '',
-            resolve: {
+    $scope.start();
+    $scope.RemoveItemDispalay = function (item) {
+        $scope.WaitForResult = true;
+        for (var i = 0; i < $scope.orderitemstates.length; i++) {
+            if ($scope.orderitemstates[i].id == item.id) {
+                $scope.orderitemstates[i].Completed = true;
+                $scope.orderitemstates[i].put().then(
+                function (res) {
+                    toaster.pop("success",  $translate.instant('kitchendisplayf.Prepared'),$translate.instant('kitchendisplayf.Itemprepared'));
+                    $scope.WaitForResult = false;
+                },
+                 function (response) {
+                     $scope.WaitForResult = false;
+                     toaster.pop('error',$translate.instant('kitchendisplayf.Updatefailed'), response.data.ExceptionMessage);
+                 });
+                break;
             }
-        });
-        modalInstance.result.then(function () {
-        })
-    };
-    var clockStop;
-    $scope.FormatClock = function (val) {
-        return $filter('date')(val, 'HH:mm:ss');
-    };
-    $scope.GoToClockIn = function () {
-        $location.path('/login/clockinout');
-    }
-    $scope.theClock = $scope.FormatClock(ngnotifyService.ServerTime());
-    $scope.StartClock = function () {
-        if (angular.isDefined(clockStop)) return;
-        clockStop = $interval(function () {
-            $scope.theClock = $scope.FormatClock(ngnotifyService.ServerTime());
-        }, 1000);
-    }
-    var stopClock = function () {
-        if (angular.isDefined(clockStop)) {
-            $interval.cancel(clockStop);
-            clockStop = undefined;
         }
+        return $scope.WaitForResult;
     };
-    $scope.StartClock();
-
-
+    $scope.RemoveItem = function (item) {
+        $scope.stop();
+        if ($scope.WaitForResult == true) {
+            toaster.pop("warning",$translate.instant('kitchendisplayf.PleaseWait'),$translate.instant('kitchendisplayf.PleaseClickAgain'));
+        } else {
+            $scope.RemoveItemDispalay(item);
+        }
+        $scope.start();
+    };
     $scope.$on('$destroy', function () {
-        //$timeout.cancel(interval);
+    $timeout.cancel(stopTime);
         deregistration();
-        clearInterval(interval);
-        //$timeout.cancel(OrderRefreshTimeOut);
-        OrderRefresh();
-        KDSNotify();
-        BumpBarData();
-        stopClock();
+        $scope.stop();
         $element.remove();
-        //$rootScope.updateSessionTimeOutState();
-        $rootScope.uService.ExitController("kds2Ctrl");
+        $rootScope.uService.ExitController("kdsCtrl");
     });
 };
-

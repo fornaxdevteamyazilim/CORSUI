@@ -1,13 +1,13 @@
 ﻿
 app.factory('PaymentRestangular', function (Restangular) {
     return Restangular.withConfig(function (RestangularConfigurer) {
-        RestangularConfigurer.setBaseUrl('http://192.168.104.153:9065/api/');
+        RestangularConfigurer.setBaseUrl('http://195.155.128.66:9065/api/');
     });
 });
 
 
 app.controller('orderCtrl', orderCtrl);
-function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAlert, Restangular, PaymentRestangular, ngTableParams, $document, toaster, $window, $stateParams, $rootScope, $location, $anchorScroll, $compile, callsService, userService, $element, ngnotifyService, $localStorage) {
+function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAlert, Restangular, PaymentRestangular, ngTableParams, $document, toaster, $window, $stateParams, $rootScope, $location, $anchorScroll, $compile, callsService, userService, $element, ngnotifyService, $localStorage, localStorageService) {
     var or = this;
     $rootScope.uService.EnterController("orderCtrl");
     $scope.Categories = [];
@@ -203,8 +203,8 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
                 //LC
                 //'<h2 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 center text-white text-capitalize" style="background-color:#FF6600; color:item;"> {{:: item.name}} <button class="btn btn-o pull-right ti-close" ng-click="cancel()"></button></h2>' +   
                 '<orderable ng-if="OrderID" item="' + ObjectID + '" order="OrderID" orderitem="' + oi + '"class="col-lg-12 col-md-12 col-sm-12 col-xs-12"></orderable>' +
-                '</div>' +
-                ' <div class="panel center">' +
+                // '</div>' +
+                // ' <div class="panel center">' +
                 '</div>',
             controller: 'orderproductitemsCtrl',
             size: 'lg',
@@ -431,7 +431,8 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
             Amount: $scope._order.Amount,
             OrderID: $scope._order.id,
             PaymentDate: $filter('date')(ngnotifyService.ServerTime(), 'yyyy-MM-dd HH:mm:ss'),
-            PaymentTypeID: $scope._order.PaymentTypeID
+            PaymentTypeID: $scope._order.PaymentTypeID,
+            PostName: localStorageService.get('ClientName')
         };
         Restangular.restangularizeElement('', payment, 'orderpayment');
         payment.post().then(function (resp) {

@@ -211,7 +211,17 @@ function kds2Ctrl(
         { name: "Product", dataField: "Product", caption: $scope.product,minWidth:200 },
         { name: "Quantity", dataField: "Quantity", caption: $scope.quantity,format: { type: "fixedPoint", precision: 2 } }
       ],
-    }
+      onRowPrepared: function(e) {
+        if(e.rowType === "data") {
+            //e.rowElement.css('fontSize', '15em');
+            //if (e.level === 0)
+              e.rowElement.css('fontWeight', 'bold');
+            //e.rowElement.css('background', '#fff2a8');  
+            //e.rowElement.css("transition", "background-color 0.5s");
+            };
+        }
+      }
+    
   };
   $scope.UpdateOrderItemStatesTimers = function (items) {
     if (items && items.length) {
@@ -365,6 +375,7 @@ function kds2Ctrl(
 
   $scope.$on("$destroy", function () {
     //$timeout.cancel(interval);
+    $rootScope.app.layout.isNavbarFixed=true;
     deregistration();
     clearInterval(interval);
     //$timeout.cancel(OrderRefreshTimeOut);
