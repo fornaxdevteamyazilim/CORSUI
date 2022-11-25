@@ -208,8 +208,8 @@ function kds2Ctrl(
       virtualModeEnabled: true,
       autoExpandAll: true,
       columns: [
-        { name: "Product", dataField: "Product", caption: $scope.product,minWidth:200 },
-        { name: "Quantity", dataField: "Quantity", caption: $scope.quantity,format: { type: "fixedPoint", precision: 2 } }
+        { name: "Product", dataField: "Product", caption: $scope.product,Width:"90%" },
+        { name: "Quantity", dataField: "Quantity", caption: "#",format: { type: "fixedPoint", precision: 0 } }
       ],
       onRowPrepared: function(e) {
         if(e.rowType === "data") {

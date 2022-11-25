@@ -5,25 +5,7 @@
     .prepared {
         color: darkgreen;
     }
-    .ngsize10pt {
-        font-size: 13px;
-    }
 
-    .ngsize12pt {
-        font-size: 16px;
-    }
-
-    .ngsize14pt {
-        font-size: 18px;
-    }
-
-    .ngsize16pt {
-        font-size: 21px;
-    }
-
-    .ngsize18pt {
-        font-size: 24px;
-    }
 
     /*[class*="col-"] {
         background-color: #eee;
@@ -41,8 +23,8 @@
     th {
         border: 1px solid #dddddd;
         text-align: left;
-        padding: 7px;
-        font-size: 10px;
+        padding: 3px;
+        font-size: 15px;
         /* width: 1px; */
         text-align: center;
     }
@@ -50,10 +32,16 @@
     tr:nth-child(even) {
         background-color: #ffffff;
     }
+    .bglogo {
+        background-image: url("assets/images/glogo.jpg"); 
+        background-repeat: no-repeat; 
+        background-attachment: fixed; 
+        background-position: center;
+    }
 </style>
 
-<div ng-controller="kds2Ctrl" ng-init="app.layout.isSidebarClosed=true">
-    <div class="panel-body col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div ng-controller="kds2Ctrl" ng-init="app.layout.isSidebarClosed=true" class="bglogo">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <!--<span class="col-lg-2 col-md-2 col-sm-2 col-xs-2 pull-left"><button class="btn btn-o btn-info text-extra-large ti-receipt tooltips" tooltip="{{:: 'main.PREPAREDOREDER' | translate}}" tooltip-placement="left" ng-click="getLastOrders()"></button></span>-->
             <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 margin-top-5 pull-right visible-lg">
@@ -99,9 +87,9 @@
             <div class="row">
                 <div class="list-group-item-success" ng-repeat="item in :refresh:orderitemstates" >
                     <div class="col-sm-6 col-md-3" ng-click="RemoveItem(item.OrderID, $index, $index,item.AutoPrint)" ng-dblclick="BottonDblcilik()">
-                                <div class="panel panel-white" style="background-color:dimgray;">
-                                    <div class="panel-heading">
-                                        <div class="panel-title" style="font-size:20px ">
+                                <div  style="background-color:dimgray;">
+                                    <div style="border: 5px solid black;">
+                                        <div class="panel-title" style="font-size:10px">
                                             
                                             <table>
                                                 <tr style="background-color: #f5f5f5;">
