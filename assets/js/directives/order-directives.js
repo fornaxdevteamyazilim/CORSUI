@@ -125,7 +125,7 @@ function orderable($compile, $modal,$translate) {
             $scope.CalculatePrice = function (item, includeItemPrice) {
                 if (item) {
                     var itemPrice = 0;
-                    if (item.Price != null)
+                   // if (item.Price != null)
                         var price = (item.Price != null && includeItemPrice) ? item.Price.Price : 0;
                     if (item.Options != null)
                         for (var i = 0; i < item.Options.length; i++) {
@@ -202,7 +202,7 @@ function orderable($compile, $modal,$translate) {
                                 }
                                 else {
                                     for (var a = 0; a < item.Options[i].Items.length; a++) {
-                                        if (item.Options[i].Items[a].Price != null) {
+                                       // if (item.Options[i].Items[a].Price != null) {
                                             if (item.Options[i].SelectedItems) {
                                                 if (item.Options[i].Items[a].id == item.Options[i].SelectedItems.id) {
                                                     var iPrice = (item.Options[i].Items[a].Price) ? item.Options[i].Items[a].Price.Price : 0;
@@ -224,7 +224,7 @@ function orderable($compile, $modal,$translate) {
                                                 price += ($scope.PriceModifierExists("Changed", item.Options[i].PriceModifiyers) && item.Options[i].Items[a].DefaultQuantity == item.Options[i].Items[a].Quantity) ? 0 : (item.Options[i].Items[a].Quantity > 0) ? $scope.CalculatePrice(item.Options[i].Items[a], true) : 0;
                                             }
 
-                                        }
+                                       // }
 
 
                                     }
@@ -642,12 +642,14 @@ function optionitemRadio($compile) {
             "<h4  class='hideContentHeader col-xs-12 col-lg-12 col-md-12 col-sm-12 text-capitalize' content-click>" +
             "{{:: option.name}}" +
             "</h4>" +
-            "<div class='hideContent btn-group col-lg-12 col-md-12' data-toggle='buttons'>" +
-            "<label class='btn btn-red col-lg-3 col-md-3' ng-repeat='item in option.Items' ng-class=\"{'btn-o':item.id!=option.SelectedItems.id}\">" +
+            "<div class='col-lg-12 col-md-12 col-sm-12 col-xs-12 visibleContent text-large'>" +
+            "<div class='btn-group col-lg-12' data-toggle='buttons'>" +
+            "<label class='btn btn-red col-lg-3' ng-repeat='item in option.Items' ng-class=\"{'btn-o':item.id!=option.SelectedItems.id}\">" +
             "<input type='radio' name='' ng-value='item.id' ng-model='option.SelectedItems.id' ng-click='UpdateDetails($event,option)' ng-init='UpdateDetails($event,option)'   >" +
-            "<div class='col-lg-11 col-md-11'> <div class='col-lg-10 col-md-10' style='overflow-y: hidden;height: 20px;' >{{:: item.name}}</div><div ng-if='item.Price.Price>0' class='col-lg-2 col-md-2 style='text-align: left;'> {{:: item.Price.Price| number:2}}</div></div></label>" +
-            "</div>" +
-            "</div>" +
+            "{{:: item.name}}</label>" +
+            "</div>" +   
+            "</div>" +   
+            "</div>" +            
             "<div class='hideContent col-lg-12' id='contentdetail'>" +
             "<div id='optdetail'></div>" +
             "</div>",
