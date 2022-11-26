@@ -195,7 +195,7 @@ function kds2Ctrl(
       columnAutoWidth: true,
       allowColumnResizing: true,
       showColumnLines: true,
-      rowAlternationEnabled: true,
+      //rowAlternationEnabled: true,
       hoverStateEnabled: true,
       allowColumnReordering: true,
       //selectedRowKeys: [1, 29, 42],
@@ -207,17 +207,18 @@ function kds2Ctrl(
       parentIdExpr: "ParentItemID",
       virtualModeEnabled: true,
       autoExpandAll: true,
+      //filterSyncEnabled: true,
+      //headerFilter: { visible: true },
+      //filterValue: ["DisplayOnKDS", "=", "true"], 
       columns: [
         { name: "Product", dataField: "Product", caption: $scope.product,Width:"90%" },
         { name: "Quantity", dataField: "Quantity", caption: "#",format: { type: "fixedPoint", precision: 0 } }
       ],
       onRowPrepared: function(e) {
         if(e.rowType === "data") {
-            //e.rowElement.css('fontSize', '15em');
-            //if (e.level === 0)
-              e.rowElement.css('fontWeight', 'bold');
-            //e.rowElement.css('background', '#fff2a8');  
-            //e.rowElement.css("transition", "background-color 0.5s");
+          e.rowElement.css('fontWeight', 'bold');
+          if (e.data.isPrepared)
+              e.rowElement.css('background', '#aaffa8');  
             };
         }
       }
