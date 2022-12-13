@@ -238,7 +238,7 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
             search: "OrderID='" + (($scope._order) ? $scope._order.id : "") + "'"
         }).then(function (_orderItems) {
             $scope.orderItems = angular.copy($scope.UpdateOrderItemPersonsAndSplits(_orderItems));
-
+            $scope.GetPromotion();
             $scope.UpdateOrderTotal(_orderItems);
             $scope.CalculateItemAmountWithsubItems();
 
@@ -994,6 +994,7 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
         })
     };
     $scope.Promotion = [];
+    $scope.OrderPromotion = [];
     $scope.GetPromotion = function (data) {
         Restangular.all('orderpromotion').getList({
             pageNo: 1,
@@ -1001,8 +1002,10 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
             search: "OrderID='" + $scope.OrderID + "'"
         }).then(function (result) {
             $scope.Promotion = result;
-            $scope.LoadOrderItems();
-        }, function (response) {
+            $scope.OrderPromotion = result;
+            $scope.UpdateOrderTotal($scope.orderItems);
+            $scope.CalculateItemAmountWithsubItems();
+                }, function (response) {
             toaster.pop('error', $translate.instant('orderfile.OrderPromotionsFailedLoad'), response.data.ExceptionMessage);
         });
     };

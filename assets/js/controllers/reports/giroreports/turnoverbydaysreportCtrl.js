@@ -98,6 +98,7 @@ function turnoverbydaysreportCtrl($scope, $filter, $modal, $log, Restangular, Sw
                 alternateDataFields: false
             });
         },
+        remoteOperations: true,
         dataSource: {
             remoteOperations: true,
             fields: [

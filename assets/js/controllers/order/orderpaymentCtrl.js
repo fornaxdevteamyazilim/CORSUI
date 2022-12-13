@@ -100,6 +100,26 @@ function orderpaymentCtrl($scope, $log, $modal, $filter, $modalInstance, Order, 
         } else {
             $scope.showchange = false;
         }
+       
+    };
+    $scope.CalcSellChanges = function (Amount) {
+        if (Amount >= $scope.currentPayment.Amount) {
+            $scope.showchange = true;
+            $scope.change = Amount  - $scope.currentPayment.Amount;
+        } else {
+            $scope.showchange = false;
+        }
+
+        // if(Amount == "100 * 2"){
+        //     $scope.change = Amount - $scope.currentPayment.Amount;
+        // }
+        
+    };
+    $scope.reset=function(operation){
+        if (operation == "") {
+            $scope.showchange = false;
+            $scope.currentPayment.Amount = $scope.currentPayment.Amount;
+        }
     };
     $scope.PersonTotal = function (PersonID) {
         var peritem = $filter('filter')($scope.order.items, { OrderPersonID: PersonID });
