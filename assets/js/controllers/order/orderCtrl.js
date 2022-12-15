@@ -721,7 +721,6 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
             });
         }
     };
-
     $scope.OrderInvoice;
     $scope.CreateOrderInvoice = function () {
         if (!$scope.OrderInvoice) {
@@ -992,7 +991,7 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
             $scope.GetPromotion(data.OrderID);
             $('#orderables').append('');
         })
-    };
+    };   
     $scope.Promotion = [];
     $scope.OrderPromotion = [];
     $scope.GetPromotion = function (data) {
@@ -1064,6 +1063,36 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
                 $window.history.back();
             }
         })
+    };
+    $scope.CheckCode = function (orderID, itemStates) {
+        if ($rootScope.user.restrictions.authorized == "Enable") {
+            var modalInstance = $modal.open({
+                templateUrl: 'assets/views/mainscreen/loginpassword.html',
+                controller: 'loginpasswordCtrl',
+                size: '',
+                backdrop: '',
+            });
+            modalInstance.result.then(function (password) {
+                if (password != "cancel") {
+                    userService.cardLogin(password, true).then(function (response) {
+                        $scope.ChangeOrderState(orderID, itemStates)
+                    }, function (err) {
+                        if (err) {
+                            toaster.pop('warrning', $translate.instant('orderfile.PasswordIncorrect'), err.error_description);
+                            return 'No'
+                        }
+                        else {
+                            $scope.message = "Unknown error";
+                            return 'No'
+                        }
+                    });
+
+                }
+            })
+        } else {
+            toaster.pop("warning", $translate.instant('orderfile.YOURENOTAUTHORIZEDTODOTHAT'));
+            return 'No';
+        }
     };
     $scope.ShowMap = function (item) {
         var modalInstance = $modal.open({

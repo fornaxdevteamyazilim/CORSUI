@@ -1,5 +1,5 @@
 ﻿app.controller('orderpromotionsCtrl', orderpromotionsCtrl);
-function orderpromotionsCtrl($rootScope, $translate, $scope, $log, $filter, $modalInstance, SweetAlert, Restangular, Order, ngTableParams, toaster, $window) {
+function orderpromotionsCtrl($rootScope, $translate, userService, $scope, $log, $filter, $modal, $modalInstance, SweetAlert, Restangular, Order, ngTableParams, toaster, $window) {
     $rootScope.uService.EnterController("orderproductitemsCtrl");
     $scope.AktiveCode = false;
     $scope.translate = function () {
@@ -21,7 +21,35 @@ function orderpromotionsCtrl($rootScope, $translate, $scope, $log, $filter, $mod
             for (var i = 0; i < result.length; i++) {
                 if (result[i].PromotionScenario == 1)
                     $scope.AktiveCode = true;
-            }
+            }  
+            if ( $scope.AktiveCode == false) {
+                if ($rootScope.user.restrictions.authorized == "Enable") {
+                    var modalInstance = $modal.open({
+                        templateUrl: 'assets/views/mainscreen/loginpassword.html',
+                        controller: 'loginpasswordCtrl',
+                        size: '',
+                        backdrop: '',
+                    });
+                    modalInstance.result.then(function (password) {
+                        if (password != "cancel" ) {
+                            userService.cardLogin(password, true).then(function (response) {
+                                $scope.AktiveCode = true;   
+                            }, function (err) {
+                                if (err) {
+                                    toaster.pop('warrning', $translate.instant('orderfile.PasswordIncorrect'), err.error_description);
+                                    return 'No'
+                                }
+                                else {
+                                    $scope.message = "Unknown error";
+                                    return 'No'
+                                }
+                            });
+        
+                        }
+                    })
+         
+                 } 
+            } 
         }, function (response) {
             toaster.pop('error', $translate.instant('Server.ServerError'));
         });
