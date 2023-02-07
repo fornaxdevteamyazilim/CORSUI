@@ -365,7 +365,7 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
                     if (restresult.OrderTypeID == 7)
                         location.href = '#/app/orders/orderStore/' + restresult.id;      //Adrese Sipaiş - Getir
                     if (restresult.OrderTypeID == 10)
-                        location.href = '#/app/orders/orderStoreTable/' + restresult.id; // (Hızlı Sipariş) 
+                        location.href = '#/app/orders/orderStoreTable/' + restresult.id; // (Hızlı Sipariş)                     
                 }
                 if ($rootScope.user.restrictions.storeorderpage != 'Enable') //for Callcenter
                     location.href = '#/app/orders/order/' + restresult.id;
@@ -552,12 +552,23 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
     //        $scope.SaveOrder(order);
     //    }
     //};
+    $scope.OrderNumberChang = function (ordernumber, OrderID) {
+        
+            Restangular.all('Order',OrderID).getList({
+            }).then(function (result) {
+                if ( $scope._order.OrderTypeID == 1 || $scope._order.OrderTypeID == 10) {
+                ordernumber = "new"
+                    
+                    $location.path('/app/mainscreen');   
+                }  
+            });
+    };
     $scope.SaveOrder = function (PaymentType) {
         $scope.isReason = true;
         if (PaymentType && PaymentType.PaymentTypeID) {
             $scope._order.PaymentTypeID = PaymentType.id;
         }
-        if ($scope._order.PaymentTypeID == null && $scope._order.OrderTypeID != 0 && $scope._order.OrderTypeID != 1 && $scope._order.OrderTypeID != 4) {
+        if ($scope._order.PaymentTypeID == null && $scope._order.OrderTypeID != 0 && $scope._order.OrderTypeID != 4) {
             toaster.pop('Warning', $translate.instant('orderfile.PaymentType'), $translate.instant('orderfile.SELECTPAYMENTTYPE'));
         } else {
             if ($scope._order.OrderStateID == 2) { //Sipariş Değişikliği
@@ -567,6 +578,7 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
                 ordertosave.put().then(function (result) {
                     event.preventDefault();
                     $rootScope.searchName = '';
+                    $scope._order.OrderNumber = "new";
                     if ($scope._order.OrderTypeID == 2 || $scope._order.OrderTypeID == 7) {
                         swal({
                             title: "Order ID :'" + result.id + "' Store :'" + result.Store + "' Date:'" + $filter('date')(ngnotifyService.ServerTime(), 'HH:mm:ss') + "'" + $scope.WDT,
@@ -620,6 +632,7 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
                             toaster.pop('success', $translate.instant('orderfile.Cateringproduct'), '');
                         });
                     }
+              
                     $rootScope.searchName = '';
                     if ($scope._order.OrderTypeID == 0) {
                         $location.path('/app/orders/tablePlan');
@@ -630,13 +643,13 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
                     //if ($scope._order.OrderTypeID == 0 && $rootScope.user.UserRole.MemberID == 106851154380) {
                     //    $location.path('/app/mainscreen');
                     //}
-                    if ($scope._order.OrderTypeID == 1) {
-                        if (userService.userIsInRole("CALLCENTER") || userService.userIsInRole("CCMANAGER"))
-                            $location.path('/app/orders/personpage/list');
-                        if (userService.userIsInRole("STORETEST") || userService.userIsInRole("STOREMANAGER") || userService.userIsInRole("STOREASSISTANTMANAGER") || userService.userIsInRole("STORESHIFTMANAGER") || userService.userIsInRole("STOREUSER") || userService.userIsInRole("STORE") || userService.userIsInRole("Admin") || userService.userIsInRole("PHAdmin") || userService.userIsInRole("Driver"))
-                            $location.path('/app/mainscreen');
-                        userService.landingPage(false);
-                    }
+                    // if ($scope._order.OrderTypeID == 1) {
+                    //     if (userService.userIsInRole("CALLCENTER") || userService.userIsInRole("CCMANAGER"))
+                    //         $location.path('/app/orders/personpage/list');
+                    //     if (userService.userIsInRole("STORETEST") || userService.userIsInRole("STOREMANAGER") || userService.userIsInRole("STOREASSISTANTMANAGER") || userService.userIsInRole("STORESHIFTMANAGER") || userService.userIsInRole("STOREUSER") || userService.userIsInRole("STORE") || userService.userIsInRole("Admin") || userService.userIsInRole("PHAdmin") || userService.userIsInRole("Driver"))
+                    //         $location.path('/app/mainscreen');
+                    //     userService.landingPage(false);
+                    // }
                     if ($scope._order.OrderTypeID == 2) {
                         swal({
                             title: "Order ID :'" + result.id + "' Store :'" + result.Store + "' Date :'" + $filter('date')(ngnotifyService.ServerTime(), 'HH:mm:ss') + "'" + $scope.WDT,
@@ -684,11 +697,12 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
                         if (userService.userIsInRole("STORETEST") || userService.userIsInRole("STOREMANAGER") || userService.userIsInRole("STOREASSISTANTMANAGER") || userService.userIsInRole("STORESHIFTMANAGER") || userService.userIsInRole("STOREUSER") || userService.userIsInRole("STORE") || userService.userIsInRole("Admin") || userService.userIsInRole("PHAdmin") || userService.userIsInRole("Driver"))
                             $location.path('/app/mainscreen');
                     }
-                    if ($scope._order.OrderTypeID == 10) {
-                        if (userService.userIsInRole("STORETEST") || userService.userIsInRole("STOREMANAGER") || userService.userIsInRole("STOREASSISTANTMANAGER") || userService.userIsInRole("STORESHIFTMANAGER") || userService.userIsInRole("STOREUSER") || userService.userIsInRole("STORE") || userService.userIsInRole("Admin") || userService.userIsInRole("PHAdmin") || userService.userIsInRole("Driver"))
-                            $scope.isorderpayeds();
-                        $location.path('/app/mainscreen');
-                    }
+                    // if ($scope._order.OrderTypeID == 10) {
+                    //     if (userService.userIsInRole("STORETEST") || userService.userIsInRole("STOREMANAGER") || userService.userIsInRole("STOREASSISTANTMANAGER") || userService.userIsInRole("STORESHIFTMANAGER") || userService.userIsInRole("STOREUSER") || userService.userIsInRole("STORE") || userService.userIsInRole("Admin") || userService.userIsInRole("PHAdmin") || userService.userIsInRole("Driver"))
+                    //         $scope.isorderpayeds();
+                    //     $location.path('/app/mainscreen');
+                    // }
+                    $scope.OrderNumberChang('new');
                     $rootScope.allowNavigation();
                     $scope.CallReason(1, 'new');
                     $scope.ClearCallerID();
@@ -924,12 +938,16 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
         });
     };
 
-    $scope.OrderPaymentDeteails = function (item, rootemsg) {
+    $scope.OrderPaymentDeteails = function (item, rootemsg, ordertype) {
+        if (ordertype) {
+            item.OrderTypeID = ordertype;
+            item.OrderNumber = "new";
+        }
         if ($rootScope.user && $rootScope.user.Store && $rootScope.user.Store.MemberID && $rootScope.user.Store.MemberID == 900000000001) {
             if ((item.OrderTypeID == 4) || (item.Amount == 0)) {
                 $scope.SaveOrder();
             } else {
-                item.items = $scope.orderItems;
+                item.items = $scope.orderItems;          
                 var modalInstance = $modal.open({
                     templateUrl: 'assets/views/order/orderpayments.html',
                     controller: 'orderpaymentCtrl',
@@ -943,7 +961,7 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
                 });
                 modalInstance.result.then(function (item, type) {
                     if (item.msg == 'ECRPayment' || item.msg == 'OtherPayment')
-                        if ($scope._order.OrderTypeID == 0 || $scope._order.OrderTypeID == 1 || $scope._order.OrderTypeID == 5 || $scope._order.OrderTypeID == 6 || $scope._order.OrderTypeID == 10) {
+                        if ($scope._order.OrderTypeID == 0 || $scope._order.OrderTypeID == 1 || $scope._order.OrderTypeID == 5 || $scope._order.OrderTypeID == 6 || $scope._order.OrderTypeID == 10) {                            
                             $scope._order.PaymentTypeID = angular.copy(item.PaymentTypeID);
                             $scope.SaveOrder();
                         }
@@ -953,7 +971,7 @@ function orderCtrl($scope, $log, $filter, $timeout, $translate, $modal, SweetAle
             if ((item.OrderTypeID == 0 && rootemsg == 'save') || (item.OrderTypeID == 1 && rootemsg == 'save') || (item.OrderTypeID == 4) || (item.Amount == 0)) {
                 $scope.SaveOrder();
             } else {
-                item.items = $scope.orderItems;
+                item.items = $scope.orderItems;        
                 var modalInstance = $modal.open({
                     templateUrl: 'assets/views/order/orderpayments.html',
                     controller: 'orderpaymentCtrl',

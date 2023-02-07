@@ -184,7 +184,42 @@ function kds2Ctrl(
         toaster.pop('error', $translate.instant('Server.ServerError'), response.data.ExceptionMessage);
     });
 };
-
+// $scope.revertlastorder = function () {
+//   $scope.inProgress = true;
+//   Restangular.all('kds/revertlastorder').getList({}).then(function (result) {
+//       $scope.inProgress = false;
+//       toaster.pop('success', $translate.instant('Server.ServerError'));
+//   }, function (response) {
+//       $scope.inProgress = false;
+//       toaster.pop('error', $translate.instant('Server.ServerError'), response.data.ExceptionMessage);
+//   });
+// };
+$scope.revertlastorder = function (OrderID) {
+  Restangular.one("kds/revertlastorder")
+    .get({
+      OrderID: OrderID,
+    
+    })
+    .then(
+      function (restresult) {
+        toaster.pop(
+          "success",
+          $translate.instant("kitchendisplayf.Prepared"),
+          $translate.instant("kitchendisplayf.Itemprepared")
+        );
+        $scope.LoadOrderItemStates();
+      },
+      function (restresult) {
+        $scope.WaitForResult = false;
+        toaster.pop(
+          "error",
+          $translate.instant("kitchendisplayf.Updatefailed"),
+          restresult.data.ExceptionMessage
+        );
+        $scope.LoadOrderItemStates();
+      }
+    );
+};
   $scope.LoadOrderItemStates();
   $scope.dataGridOptionsorder = function (items) {
     return {

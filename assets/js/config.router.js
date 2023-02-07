@@ -43,7 +43,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$controllerProvider', '$com
         }).state('app.mainscreen', {
             url: "/mainscreen",
             templateUrl: "assets/views/mainscreen/mainscreen.html",
-            resolve: loadSequence('jquery-sparkline', 'sparkline', 'mainscreenCtrl', 'loginpasswordCtrl', 'checkoutcashCtrl', 'cashdrawerCtrl', 'ngTable', 'currentendCtrl', 'notpaidCtrl', 'treatCtrl', 'acentextensionCtrl', 'ngAudio', 'dashboardCtrl', 'authcodeCtrl', 'ysstoreeditCtrl'),
+            resolve: loadSequence('jquery-sparkline', 'sparkline', 'mainscreenCtrl', 'loginpasswordCtrl', 'checkoutcashCtrl', 'cashdrawerCtrl', 'ngTable', 'currentendCtrl', 'notpaidCtrl', 'treatCtrl', 'acentextensionCtrl', 'ngAudio', 'dashboardCtrl', 'authcodeCtrl', 'ysstoreeditCtrl','orderCtrl'),
             title: 'mainscreen',
             authenticate: true,
             ncyBreadcrumb: {
@@ -942,7 +942,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$controllerProvider', '$com
         }).state('app.orders.order', {
             url: '/order/:id',
             templateUrl: "assets/views/order/order.html",
-            resolve: loadSequence('underscore', 'xeditable', 'config-xeditable', 'ngTable', 'touchspin-plugin', 'angular-bootstrap-touchspin', 'orderCtrl', 'orderproductitemsCtrl', 'orderpaymentCtrl', 'orderpromotionsCtrl', 'changeorderstateCtrl', 'orderinvoiceCtrl'),
+            resolve: loadSequence('underscore', 'xeditable', 'config-xeditable', 'ngTable', 'touchspin-plugin', 'angular-bootstrap-touchspin', 'orderCtrl', 'orderproductitemsCtrl', 'orderpaymentCtrl', 'orderpromotionsCtrl', 'changeorderstateCtrl', 'orderinvoiceCtrl', 'loginpasswordCtrl' ),
             title: 'Order',
             authenticate: true,
             ncyBreadcrumb: {
@@ -960,7 +960,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$controllerProvider', '$com
         }).state('app.orders.orderStoreTable', {
             url: '/orderStoreTable/:id',
             templateUrl: "assets/views/order/orderPageStoreTable.html",
-            resolve: loadSequence('underscore', 'xeditable', 'config-xeditable', 'ngTable', 'touchspin-plugin', 'angular-bootstrap-touchspin', 'orderCtrl', 'orderproductitemsCtrl', 'orderpaymentCtrl', 'orderpromotionsCtrl', 'changeorderstateCtrl', 'splitaccountCtrl', 'orderinvoiceCtrl', 'gastropayCtrl'),
+            resolve: loadSequence('underscore', 'xeditable', 'config-xeditable', 'ngTable', 'touchspin-plugin', 'angular-bootstrap-touchspin', 'orderCtrl', 'orderproductitemsCtrl', 'orderpaymentCtrl', 'orderpromotionsCtrl', 'changeorderstateCtrl', 'splitaccountCtrl', 'orderinvoiceCtrl', 'gastropayCtrl','mainscreenCtrl'),
             title: 'OrderStoreTable',
             authenticate: true,
             ncyBreadcrumb: {
